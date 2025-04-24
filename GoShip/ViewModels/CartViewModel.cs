@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -51,6 +52,17 @@ namespace GoShip.ViewModels
         {
             db.RemoveOrder(orderId);
             LoadCart();
+        }
+
+        public void ConfirmOrder(string address)
+        {
+            var ordersToConfirm = CartItems.ToList();
+            foreach (var order in ordersToConfirm)
+            {
+                db.UpdateOrder(order.Id, address, DateTime.Now.ToString("yyyy-MM-dd"));
+            }
+            LoadCart();
+            LoadPastOrders();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

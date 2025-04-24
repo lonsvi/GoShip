@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using GoShip.Services;
 
@@ -22,15 +23,15 @@ namespace GoShip.Views
             }
 
             var db = new DatabaseService();
-            bool success = db.RegisterUser(login, password, "Client");
-            if (success)
+            try
             {
+                db.RegisterUser(login, password, "Client");
                 MessageBox.Show("Регистрация успешна!");
                 NavigationService.Navigate(new LoginPage());
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Логин уже занят!");
+                MessageBox.Show(ex.Message); // Например, "Пользователь с таким логином уже существует!"
             }
         }
 
