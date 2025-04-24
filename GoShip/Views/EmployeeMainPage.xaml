@@ -1,0 +1,15 @@
+﻿<Page x:Class="GoShip.Views.EmployeeMainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="GoShip - Сотрудник">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Задачи">
+                <TextBlock Text="Список задач (в разработке)" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </TabItem>
+            <TabItem Header="Поддержка">
+                <TextBlock Text="Чат с клиентами (в разработке)" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
