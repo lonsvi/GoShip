@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Threading.Tasks;
+using GoShip.Services;
 using GoShip.ViewModels;
 
 namespace GoShip.Views
@@ -9,6 +10,7 @@ namespace GoShip.Views
     {
         private readonly int userId;
         private readonly CartViewModel viewModel;
+        private readonly DatabaseService db;
 
         public CheckoutPage(int userId)
         {
@@ -16,6 +18,32 @@ namespace GoShip.Views
             this.userId = userId;
             viewModel = new CartViewModel(userId);
             DataContext = viewModel;
+            db = new DatabaseService();
+            LoadUserDetails();
+        }
+
+        private void LoadUserDetails()
+        {
+            var (name, email, address) = db.GetUserDetails(userId);
+            NameTextBox.Text = name;
+            EmailTextBox.Text = email;
+            AddressTextBox.Text = address;
+        }
+
+        private void SaveDetails_Click(object sender, RoutedEventArgs e)
+        {
+            string name = NameTextBox.Text;
+            string email = EmailTextBox.Text;
+            string address = AddressTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(address))
+            {
+                MessageBox.Show("Пожалуйста, заполните все поля!");
+                return;
+            }
+
+            db.SaveUserDetails(userId, name, email, address);
+            MessageBox.Show("Данные сохранены!");
         }
 
         private void Cart_Click(object sender, RoutedEventArgs e)
@@ -79,6 +107,9 @@ namespace GoShip.Views
                 MessageBox.Show("Пожалуйста, укажите CVV!");
                 return;
             }
+
+            // Сохраняем данные клиента
+            db.SaveUserDetails(userId, name, email, address);
 
             // Сохраняем заказ
             viewModel.ConfirmOrder(address);

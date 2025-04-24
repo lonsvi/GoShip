@@ -74,8 +74,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\CartItem.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Services\DatabaseService.cs" />

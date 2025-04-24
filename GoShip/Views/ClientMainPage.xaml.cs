@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using GoShip.Models;
 using GoShip.ViewModels;
 
 namespace GoShip.Views
@@ -16,7 +14,7 @@ namespace GoShip.Views
             InitializeComponent();
             this.userId = userId;
             viewModel = new ClientMainViewModel(userId);
-            DataContext = viewModel; // Устанавливаем DataContext
+            DataContext = viewModel;
         }
 
         private void Cart_Click(object sender, RoutedEventArgs e)
@@ -39,7 +37,7 @@ namespace GoShip.Views
             var button = sender as Button;
             if (button != null && button.Tag is int productId)
             {
-                viewModel.PlaceOrder(userId, productId, "В корзине");
+                viewModel.AddToCart(productId);
                 MessageBox.Show($"Товар с ID {productId} добавлен в корзину!");
             }
         }

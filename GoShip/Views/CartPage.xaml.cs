@@ -40,9 +40,9 @@ namespace GoShip.Views
         private void RemoveFromCart_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            if (button != null && button.Tag is int orderId)
+            if (button != null && button.Tag is int productId)
             {
-                viewModel.RemoveFromCart(orderId);
+                viewModel.RemoveFromCart(productId);
                 MessageBox.Show("Товар удалён из корзины!");
             }
         }

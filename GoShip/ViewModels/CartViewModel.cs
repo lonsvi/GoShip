@@ -10,7 +10,10 @@ namespace GoShip.ViewModels
 {
     public class CartViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Order> CartItems { get; set; }
+        private readonly DatabaseService db;
+        private readonly int userId;
+
+        public ObservableCollection<CartItem> CartItems { get; set; }
         public ObservableCollection<Order> PastOrders { get; set; }
 
         private decimal _cartTotal;
@@ -24,9 +27,6 @@ namespace GoShip.ViewModels
             }
         }
 
-        private readonly DatabaseService db;
-        private readonly int userId;
-
         public CartViewModel(int userId)
         {
             this.userId = userId;
@@ -37,30 +37,39 @@ namespace GoShip.ViewModels
 
         private void LoadCart()
         {
-            var orders = db.GetOrders(userId).Where(o => o.Address == "В корзине").ToList();
-            CartItems = new ObservableCollection<Order>(orders);
-            CartTotal = CartItems.Sum(order => order.Product.Price);
+            var cartItems = db.GetCartItems(userId);
+            CartItems = new ObservableCollection<CartItem>(cartItems);
+            CartTotal = CartItems.Sum(item => item.Product.Price * item.Quantity);
         }
 
         private void LoadPastOrders()
         {
-            var pastOrders = db.GetOrders(userId).Where(o => o.Address != "В корзине").ToList();
+            var pastOrders = db.GetOrders(userId);
             PastOrders = new ObservableCollection<Order>(pastOrders);
         }
 
-        public void RemoveFromCart(int orderId)
+        public void RemoveFromCart(int productId)
         {
-            db.RemoveOrder(orderId);
+            db.RemoveFromCart(userId, productId);
             LoadCart();
         }
 
         public void ConfirmOrder(string address)
         {
-            var ordersToConfirm = CartItems.ToList();
-            foreach (var order in ordersToConfirm)
+            var items = CartItems.ToList();
+            if (!items.Any())
+                return;
+
+            decimal total = items.Sum(item => item.Product.Price * item.Quantity);
+            string orderDate = DateTime.Now.ToString("yyyy-MM-dd");
+            int orderId = db.CreateOrder(userId, address, total, orderDate);
+
+            foreach (var item in items)
             {
-                db.UpdateOrder(order.Id, address, DateTime.Now.ToString("yyyy-MM-dd"));
+                db.AddOrderItem(orderId, item.ProductId, item.Product.Name, item.Product.Price, item.Quantity);
             }
+
+            db.ClearCart(userId);
             LoadCart();
             LoadPastOrders();
         }

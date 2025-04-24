@@ -37,14 +37,37 @@ namespace GoShip.Services
                         Fats DECIMAL,
                         Carbohydrates DECIMAL
                     );
+                    CREATE TABLE IF NOT EXISTS Cart (
+                        UserId INTEGER NOT NULL,
+                        ProductId INTEGER NOT NULL,
+                        Quantity INTEGER NOT NULL,
+                        PRIMARY KEY (UserId, ProductId),
+                        FOREIGN KEY(UserId) REFERENCES Users(Id),
+                        FOREIGN KEY(ProductId) REFERENCES Products(Id)
+                    );
                     CREATE TABLE IF NOT EXISTS Orders (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
                         UserId INTEGER,
-                        ProductId INTEGER,
                         Address TEXT NOT NULL,
                         OrderDate TEXT NOT NULL,
-                        FOREIGN KEY(UserId) REFERENCES Users(Id),
+                        Total DECIMAL NOT NULL,
+                        FOREIGN KEY(UserId) REFERENCES Users(Id)
+                    );
+                    CREATE TABLE IF NOT EXISTS OrderItems (
+                        OrderId INTEGER NOT NULL,
+                        ProductId INTEGER NOT NULL,
+                        ProductName TEXT NOT NULL,
+                        ProductPrice DECIMAL NOT NULL,
+                        Quantity INTEGER NOT NULL,
+                        FOREIGN KEY(OrderId) REFERENCES Orders(Id),
                         FOREIGN KEY(ProductId) REFERENCES Products(Id)
+                    );
+                    CREATE TABLE IF NOT EXISTS UserDetails (
+                        UserId INTEGER PRIMARY KEY,
+                        Name TEXT,
+                        Email TEXT,
+                        Address TEXT,
+                        FOREIGN KEY(UserId) REFERENCES Users(Id)
                     );
                 ";
                 var command = new SQLiteCommand(sql, connection);
@@ -141,6 +164,89 @@ namespace GoShip.Services
             return products;
         }
 
+        public List<CartItem> GetCartItems(int userId)
+        {
+            var cartItems = new List<CartItem>();
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = @"
+                    SELECT c.UserId, c.ProductId, c.Quantity, 
+                           p.Id, p.Name, p.Price, p.ImageUrl, p.Calories, p.Proteins, p.Fats, p.Carbohydrates
+                    FROM Cart c
+                    JOIN Products p ON c.ProductId = p.Id
+                    WHERE c.UserId = @userId";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cartItems.Add(new CartItem
+                        {
+                            UserId = reader.GetInt32(0),
+                            ProductId = reader.GetInt32(1),
+                            Quantity = reader.GetInt32(2),
+                            Product = new Product
+                            {
+                                Id = reader.GetInt32(3),
+                                Name = reader.GetString(4),
+                                Price = reader.GetDecimal(5),
+                                ImageUrl = reader.GetString(6),
+                                Calories = reader.GetInt32(7),
+                                Proteins = reader.GetDecimal(8),
+                                Fats = reader.GetDecimal(9),
+                                Carbohydrates = reader.GetDecimal(10)
+                            }
+                        });
+                    }
+                }
+            }
+            return cartItems;
+        }
+
+        public void AddToCart(int userId, int productId, int quantity)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = @"
+                    INSERT OR REPLACE INTO Cart (UserId, ProductId, Quantity)
+                    VALUES (@userId, @productId, 
+                            COALESCE((SELECT Quantity FROM Cart WHERE UserId = @userId AND ProductId = @productId), 0) + @quantity)";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                command.Parameters.AddWithValue("@productId", productId);
+                command.Parameters.AddWithValue("@quantity", quantity);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void RemoveFromCart(int userId, int productId)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = "DELETE FROM Cart WHERE UserId = @userId AND ProductId = @productId";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                command.Parameters.AddWithValue("@productId", productId);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void ClearCart(int userId)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = "DELETE FROM Cart WHERE UserId = @userId";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                command.ExecuteNonQuery();
+            }
+        }
+
         public List<Order> GetOrders(int userId)
         {
             var orders = new List<Order>();
@@ -148,10 +254,8 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.ProductId, o.Address, o.OrderDate, 
-                           p.Id, p.Name, p.Price, p.ImageUrl, p.Calories, p.Proteins, p.Fats, p.Carbohydrates
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total
                     FROM Orders o
-                    JOIN Products p ON o.ProductId = p.Id
                     WHERE o.UserId = @userId";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@userId", userId);
@@ -159,75 +263,133 @@ namespace GoShip.Services
                 {
                     while (reader.Read())
                     {
-                        orders.Add(new Order
+                        var order = new Order
                         {
                             Id = reader.GetInt32(0),
                             UserId = reader.GetInt32(1),
-                            ProductId = reader.GetInt32(2),
-                            Address = reader.GetString(3),
-                            OrderDate = reader.GetString(4),
-                            Product = new Product
+                            Address = reader.GetString(2),
+                            OrderDate = reader.GetString(3),
+                            Total = reader.GetDecimal(4),
+                            Items = new List<OrderItem>()
+                        };
+                        orders.Add(order);
+                    }
+                }
+
+                foreach (var order in orders)
+                {
+                    string itemsSql = @"
+                        SELECT oi.OrderId, oi.ProductId, oi.ProductName, oi.ProductPrice, oi.Quantity,
+                               p.Id, p.Name, p.Price, p.ImageUrl, p.Calories, p.Proteins, p.Fats, p.Carbohydrates
+                        FROM OrderItems oi
+                        JOIN Products p ON oi.ProductId = p.Id
+                        WHERE oi.OrderId = @orderId";
+                    command = new SQLiteCommand(itemsSql, connection);
+                    command.Parameters.AddWithValue("@orderId", order.Id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            order.Items.Add(new OrderItem
                             {
-                                Id = reader.GetInt32(5),
-                                Name = reader.GetString(6),
-                                Price = reader.GetDecimal(7),
-                                ImageUrl = reader.GetString(8),
-                                Calories = reader.GetInt32(9),
-                                Proteins = reader.GetDecimal(10),
-                                Fats = reader.GetDecimal(11),
-                                Carbohydrates = reader.GetDecimal(12)
-                            }
-                        });
+                                OrderId = reader.GetInt32(0),
+                                ProductId = reader.GetInt32(1),
+                                ProductName = reader.GetString(2),
+                                ProductPrice = reader.GetDecimal(3),
+                                Quantity = reader.GetInt32(4),
+                                Product = new Product
+                                {
+                                    Id = reader.GetInt32(5),
+                                    Name = reader.GetString(6),
+                                    Price = reader.GetDecimal(7),
+                                    ImageUrl = reader.GetString(8),
+                                    Calories = reader.GetInt32(9),
+                                    Proteins = reader.GetDecimal(10),
+                                    Fats = reader.GetDecimal(11),
+                                    Carbohydrates = reader.GetDecimal(12)
+                                }
+                            });
+                        }
                     }
                 }
             }
             return orders;
         }
 
-        public void PlaceOrder(int userId, int productId, string address)
+        public int CreateOrder(int userId, string address, decimal total, string orderDate)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
                 string sql = @"
-                    INSERT INTO Orders (UserId, ProductId, Address, OrderDate) 
-                    VALUES (@userId, @productId, @address, @orderDate)";
+                    INSERT INTO Orders (UserId, Address, OrderDate, Total) 
+                    VALUES (@userId, @address, @orderDate, @total);
+                    SELECT last_insert_rowid();";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@userId", userId);
-                command.Parameters.AddWithValue("@productId", productId);
                 command.Parameters.AddWithValue("@address", address);
-                command.Parameters.AddWithValue("@orderDate", DateTime.Now.ToString("yyyy-MM-dd"));
-                command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@orderDate", orderDate);
+                command.Parameters.AddWithValue("@total", total);
+                return Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
-        public void RemoveOrder(int orderId)
-        {
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
-                string sql = "DELETE FROM Orders WHERE Id = @orderId";
-                var command = new SQLiteCommand(sql, connection);
-                command.Parameters.AddWithValue("@orderId", orderId);
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public void UpdateOrder(int orderId, string address, string orderDate)
+        public void AddOrderItem(int orderId, int productId, string productName, decimal productPrice, int quantity)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
                 string sql = @"
-                    UPDATE Orders 
-                    SET Address = @address, OrderDate = @orderDate 
-                    WHERE Id = @orderId";
+                    INSERT INTO OrderItems (OrderId, ProductId, ProductName, ProductPrice, Quantity) 
+                    VALUES (@orderId, @productId, @productName, @productPrice, @quantity)";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@orderId", orderId);
-                command.Parameters.AddWithValue("@address", address);
-                command.Parameters.AddWithValue("@orderDate", orderDate);
+                command.Parameters.AddWithValue("@productId", productId);
+                command.Parameters.AddWithValue("@productName", productName);
+                command.Parameters.AddWithValue("@productPrice", productPrice);
+                command.Parameters.AddWithValue("@quantity", quantity);
                 command.ExecuteNonQuery();
             }
+        }
+
+        public void SaveUserDetails(int userId, string name, string email, string address)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = @"
+                    INSERT OR REPLACE INTO UserDetails (UserId, Name, Email, Address) 
+                    VALUES (@userId, @name, @email, @address)";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@email", email);
+                command.Parameters.AddWithValue("@address", address);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public (string name, string email, string address) GetUserDetails(int userId)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = "SELECT Name, Email, Address FROM UserDetails WHERE UserId = @userId";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@userId", userId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return (
+                            reader.IsDBNull(0) ? "" : reader.GetString(0),
+                            reader.IsDBNull(1) ? "" : reader.GetString(1),
+                            reader.IsDBNull(2) ? "" : reader.GetString(2)
+                        );
+                    }
+                }
+            }
+            return ("", "", "");
         }
     }
 }

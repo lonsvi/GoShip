@@ -142,6 +142,11 @@
                                            HorizontalAlignment="Left" 
                                            Margin="10,20,0,0" 
                                            Text="{Binding Product.Name}"/>
+                                <!-- Количество -->
+                                <TextBlock FontSize="18" 
+                                           HorizontalAlignment="Left" 
+                                           Margin="10,5,0,0" 
+                                           Text="{Binding Quantity, StringFormat=Количество: {0}}"/>
                                 <!-- Калории -->
                                 <TextBlock FontSize="18" 
                                            HorizontalAlignment="Left" 
@@ -176,7 +181,7 @@
                                         HorizontalAlignment="Left" 
                                         Margin="150,5,0,0"
                                         Click="RemoveFromCart_Click"
-                                        Tag="{Binding Id}"/>
+                                        Tag="{Binding ProductId}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -199,11 +204,23 @@
                                                FontWeight="Bold" 
                                                Text="{Binding OrderDate}"/>
                                     <TextBlock FontSize="16" 
-                                               Text="{Binding Product.Name}"/>
-                                    <TextBlock FontSize="16" 
-                                               Text="{Binding Product.Price, StringFormat=Цена: {0} руб.}"/>
+                                               Text="{Binding Total, StringFormat=Сумма: {0} руб.}"/>
                                     <TextBlock FontSize="16" 
                                                Text="{Binding Address}"/>
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="10,0,0,0">
+                                                    <TextBlock FontSize="16" 
+                                                               Text="{Binding ProductName}"/>
+                                                    <TextBlock FontSize="16" 
+                                                               Text="{Binding Quantity, StringFormat=Количество: {0}}"/>
+                                                    <TextBlock FontSize="16" 
+                                                               Text="{Binding ProductPrice, StringFormat=Цена: {0} руб.}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

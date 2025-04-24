@@ -9,6 +9,9 @@ namespace GoShip.ViewModels
 {
     public class ClientMainViewModel : INotifyPropertyChanged
     {
+        private readonly DatabaseService db;
+        private readonly int userId;
+
         public ObservableCollection<Product> Products { get; set; }
 
         private decimal _cartTotal;
@@ -22,9 +25,6 @@ namespace GoShip.ViewModels
             }
         }
 
-        private readonly DatabaseService db;
-        private readonly int userId;
-
         public ClientMainViewModel(int userId)
         {
             this.userId = userId;
@@ -35,16 +35,14 @@ namespace GoShip.ViewModels
 
         public void LoadCartTotal()
         {
-            var orders = db.GetOrders(userId);
-            CartTotal = orders.Sum(order => order.Product.Price);
-            System.Diagnostics.Debug.WriteLine($"CartTotal updated to: {CartTotal}");
+            var cartItems = db.GetCartItems(userId);
+            CartTotal = cartItems.Sum(item => item.Product.Price * item.Quantity);
         }
 
-        public void PlaceOrder(int userId, int productId, string address)
+        public void AddToCart(int productId)
         {
-            db.PlaceOrder(userId, productId, address);
+            db.AddToCart(userId, productId, 1);
             LoadCartTotal();
-            System.Diagnostics.Debug.WriteLine($"PlaceOrder called for productId: {productId}");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

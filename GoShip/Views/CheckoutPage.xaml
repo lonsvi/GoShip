@@ -10,7 +10,6 @@
     <Page.Resources>
         <!-- Стили для кнопок -->
         <SolidColorBrush x:Key="Button.Static.Background" Color="#FF808080"/>
-        <!-- Серый цвет -->
         <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
         <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
@@ -190,7 +189,8 @@
                         Width="150" 
                         Height="40" 
                         HorizontalAlignment="Left" 
-                        Margin="0,20,0,0"/>
+                        Margin="0,20,0,0"
+                        Click="SaveDetails_Click"/>
             </StackPanel>
 
             <!-- Правая колонка: данные карты -->
