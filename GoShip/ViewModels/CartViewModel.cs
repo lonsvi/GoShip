@@ -27,6 +27,17 @@ namespace GoShip.ViewModels
             }
         }
 
+        private decimal _lastOrderTotal;
+        public decimal LastOrderTotal
+        {
+            get => _lastOrderTotal;
+            set
+            {
+                _lastOrderTotal = value;
+                OnPropertyChanged();
+            }
+        }
+
         public CartViewModel(int userId)
         {
             this.userId = userId;
@@ -61,6 +72,7 @@ namespace GoShip.ViewModels
                 return;
 
             decimal total = items.Sum(item => item.Product.Price * item.Quantity);
+            LastOrderTotal = total; // Сохраняем сумму заказа перед очисткой корзины
             string orderDate = DateTime.Now.ToString("yyyy-MM-dd");
             int orderId = db.CreateOrder(userId, address, total, orderDate);
 

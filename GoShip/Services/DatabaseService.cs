@@ -73,22 +73,7 @@ namespace GoShip.Services
                 var command = new SQLiteCommand(sql, connection);
                 command.ExecuteNonQuery();
 
-                string insertProducts = @"
-                    INSERT OR IGNORE INTO Products (Name, Price, ImageUrl, Calories, Proteins, Fats, Carbohydrates) 
-                    VALUES ('Драники', 159, 'https://images.unsplash.com/photo-1598188306268-1a619eb1b560', 800, 20, 30, 40),
-                           ('Суп поре', 119, 'https://images.unsplash.com/photo-1604152135912-429d685af212', 600, 25, 35, 45),
-                           ('Овощный микс', 210, 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 400, 15, 20, 30),
-                           ('Сырный супчик', 129, 'https://images.unsplash.com/photo-1604329758250-315b426683ec', 103, 5.7, 5.8, 6),
-                           ('Курица с рисом', 179, 'https://images.unsplash.com/photo-1627662054978-18c76e8a408f', 400, 15, 20, 30),
-                           ('Рис с мясом', 149, 'https://images.unsplash.com/photo-1603133872878-684f208fb84b', 103, 5.7, 5.8, 6)";
-                command = new SQLiteCommand(insertProducts, connection);
-                command.ExecuteNonQuery();
-
-                string insertUser = @"
-                    INSERT OR IGNORE INTO Users (Login, Password, Role) 
-                    VALUES ('client', 'password', 'Client')";
-                command = new SQLiteCommand(insertUser, connection);
-                command.ExecuteNonQuery();
+               
             }
         }
 
