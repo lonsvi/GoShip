@@ -52,7 +52,8 @@ namespace GoShip.Services
                         OrderDate TEXT NOT NULL,
                         Total DECIMAL NOT NULL,
                         Status TEXT NOT NULL DEFAULT 'Активный',
-                        Comment TEXT,  -- Добавляем столбец для комментария
+                        Comment TEXT,
+                        DeliveryTime TEXT,  -- Добавляем столбец для времени доставки
                         FOREIGN KEY(UserId) REFERENCES Users(Id)
                     );
                     CREATE TABLE IF NOT EXISTS OrderItems (
@@ -79,22 +80,29 @@ namespace GoShip.Services
                 string checkColumnSql = "PRAGMA table_info(Orders);";
                 command = new SQLiteCommand(checkColumnSql, connection);
                 bool hasCommentColumn = false;
+                bool hasDeliveryTimeColumn = false;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         string columnName = reader.GetString(1);
                         if (columnName == "Comment")
-                        {
                             hasCommentColumn = true;
-                            break;
-                        }
+                        if (columnName == "DeliveryTime")
+                            hasDeliveryTimeColumn = true;
                     }
                 }
 
                 if (!hasCommentColumn)
                 {
                     string addColumnSql = "ALTER TABLE Orders ADD COLUMN Comment TEXT;";
+                    command = new SQLiteCommand(addColumnSql, connection);
+                    command.ExecuteNonQuery();
+                }
+
+                if (!hasDeliveryTimeColumn)
+                {
+                    string addColumnSql = "ALTER TABLE Orders ADD COLUMN DeliveryTime TEXT;";
                     command = new SQLiteCommand(addColumnSql, connection);
                     command.ExecuteNonQuery();
                 }
@@ -265,7 +273,7 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment, o.DeliveryTime
                     FROM Orders o
                     WHERE o.UserId = @userId";
                 var command = new SQLiteCommand(sql, connection);
@@ -283,6 +291,7 @@ namespace GoShip.Services
                             Total = reader.GetDecimal(4),
                             Status = reader.GetString(5),
                             Comment = reader.IsDBNull(6) ? "Нет комментария" : reader.GetString(6),
+                            DeliveryTime = reader.IsDBNull(7) ? "Не указано" : reader.GetString(7),
                             Items = new List<OrderItem>()
                         };
                         orders.Add(order);
@@ -336,7 +345,7 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment, o.DeliveryTime
                     FROM Orders o";
                 var command = new SQLiteCommand(sql, connection);
                 using (var reader = command.ExecuteReader())
@@ -352,6 +361,7 @@ namespace GoShip.Services
                             Total = reader.GetDecimal(4),
                             Status = reader.GetString(5),
                             Comment = reader.IsDBNull(6) ? "Нет комментария" : reader.GetString(6),
+                            DeliveryTime = reader.IsDBNull(7) ? "Не указано" : reader.GetString(7),
                             Items = new List<OrderItem>()
                         };
                         orders.Add(order);
@@ -411,14 +421,14 @@ namespace GoShip.Services
             }
         }
 
-        public int CreateOrder(int userId, string address, decimal total, string orderDate, string comment)
+        public int CreateOrder(int userId, string address, decimal total, string orderDate, string comment, string deliveryTime)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
                 string sql = @"
-                    INSERT INTO Orders (UserId, Address, OrderDate, Total, Status, Comment) 
-                    VALUES (@userId, @address, @orderDate, @total, 'Активный', @comment);
+                    INSERT INTO Orders (UserId, Address, OrderDate, Total, Status, Comment, DeliveryTime) 
+                    VALUES (@userId, @address, @orderDate, @total, 'Активный', @comment, @deliveryTime);
                     SELECT last_insert_rowid();";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@userId", userId);
@@ -426,6 +436,7 @@ namespace GoShip.Services
                 command.Parameters.AddWithValue("@orderDate", orderDate);
                 command.Parameters.AddWithValue("@total", total);
                 command.Parameters.AddWithValue("@comment", comment ?? "Нет комментария");
+                command.Parameters.AddWithValue("@deliveryTime", deliveryTime ?? "Не указано");
                 return Convert.ToInt32(command.ExecuteScalar());
             }
         }

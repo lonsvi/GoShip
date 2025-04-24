@@ -53,8 +53,8 @@
         <Style x:Key="RectangleStyle1" TargetType="{x:Type Rectangle}">
             <Setter Property="RadiusX" Value="7"/>
             <Setter Property="RadiusY" Value="7"/>
-            <Setter Property="Stroke" Value="Black"/>
-            <Setter Property="StrokeThickness" Value="3"/>
+            <Setter Property="Stroke" Value="Gray"/>
+            <Setter Property="StrokeThickness" Value="1"/>
         </Style>
     </Page.Resources>
     <Grid Background="White">

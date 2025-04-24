@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq; // Добавляем для LINQ
+using System.Linq;
 using System.Runtime.CompilerServices;
 using GoShip.Models;
 using GoShip.Services;
@@ -31,7 +32,12 @@ namespace GoShip.ViewModels
         private void LoadOrders()
         {
             var orders = db.GetAllOrders();
-            Orders = new ObservableCollection<Order>(orders);
+            // Сортируем: сначала по статусу (Активный -> Завершён), затем по времени (свежие сверху)
+            var sortedOrders = orders
+                .OrderBy(o => o.Status == "Активный" ? 0 : 1) // Активные первые
+                .ThenByDescending(o => DateTime.Parse(o.OrderDate)) // По времени, свежие сверху
+                .ToList();
+            Orders = new ObservableCollection<Order>(sortedOrders);
         }
 
         public void MarkAsActive(int orderId)
@@ -40,7 +46,17 @@ namespace GoShip.ViewModels
             var order = Orders.FirstOrDefault(o => o.Id == orderId);
             if (order != null)
             {
-                order.Status = "Активный"; // Обновляем статус в коллекции
+                order.Status = "Активный";
+                // Пересортировываем список
+                var sortedOrders = Orders
+                    .OrderBy(o => o.Status == "Активный" ? 0 : 1)
+                    .ThenByDescending(o => DateTime.Parse(o.OrderDate))
+                    .ToList();
+                Orders.Clear();
+                foreach (var o in sortedOrders)
+                {
+                    Orders.Add(o);
+                }
             }
         }
 
@@ -50,7 +66,17 @@ namespace GoShip.ViewModels
             var order = Orders.FirstOrDefault(o => o.Id == orderId);
             if (order != null)
             {
-                order.Status = "Завершён"; // Обновляем статус в коллекции
+                order.Status = "Завершён";
+                // Пересортировываем список
+                var sortedOrders = Orders
+                    .OrderBy(o => o.Status == "Активный" ? 0 : 1)
+                    .ThenByDescending(o => DateTime.Parse(o.OrderDate))
+                    .ToList();
+                Orders.Clear();
+                foreach (var o in sortedOrders)
+                {
+                    Orders.Add(o);
+                }
             }
         }
 

@@ -13,6 +13,7 @@ namespace GoShip.Models
         private decimal _total;
         private string _status;
         private string _comment;
+        private string _deliveryTime;
         private List<OrderItem> _items;
 
         public int Id
@@ -81,6 +82,16 @@ namespace GoShip.Models
             set
             {
                 _comment = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DeliveryTime
+        {
+            get => _deliveryTime;
+            set
+            {
+                _deliveryTime = value;
                 OnPropertyChanged();
             }
         }

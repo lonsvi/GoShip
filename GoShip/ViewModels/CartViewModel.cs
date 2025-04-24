@@ -65,7 +65,7 @@ namespace GoShip.ViewModels
             LoadCart();
         }
 
-        public void ConfirmOrder(string address, string comment) // Добавляем параметр comment
+        public void ConfirmOrder(string address, string comment, string deliveryTime)
         {
             var items = CartItems.ToList();
             if (!items.Any())
@@ -73,8 +73,8 @@ namespace GoShip.ViewModels
 
             decimal total = items.Sum(item => item.Product.Price * item.Quantity);
             LastOrderTotal = total;
-            string orderDate = DateTime.Now.ToString("yyyy-MM-dd");
-            int orderId = db.CreateOrder(userId, address, total, orderDate, comment); // Передаём comment
+            string orderDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            int orderId = db.CreateOrder(userId, address, total, orderDate, comment, deliveryTime);
 
             foreach (var item in items)
             {
