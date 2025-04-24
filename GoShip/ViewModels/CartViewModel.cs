@@ -7,9 +7,10 @@ using GoShip.Services;
 
 namespace GoShip.ViewModels
 {
-    public class ClientMainViewModel : INotifyPropertyChanged
+    public class CartViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Product> Products { get; set; }
+        public ObservableCollection<Order> CartItems { get; set; }
+        public ObservableCollection<Order> PastOrders { get; set; }
 
         private decimal _cartTotal;
         public decimal CartTotal
@@ -25,26 +26,31 @@ namespace GoShip.ViewModels
         private readonly DatabaseService db;
         private readonly int userId;
 
-        public ClientMainViewModel(int userId)
+        public CartViewModel(int userId)
         {
             this.userId = userId;
             db = new DatabaseService();
-            Products = new ObservableCollection<Product>(db.GetProducts());
-            LoadCartTotal();
+            LoadCart();
+            LoadPastOrders();
         }
 
-        public void LoadCartTotal()
+        private void LoadCart()
         {
-            var orders = db.GetOrders(userId);
-            CartTotal = orders.Sum(order => order.Product.Price);
-            System.Diagnostics.Debug.WriteLine($"CartTotal updated to: {CartTotal}");
+            var orders = db.GetOrders(userId).Where(o => o.Address == "В корзине").ToList();
+            CartItems = new ObservableCollection<Order>(orders);
+            CartTotal = CartItems.Sum(order => order.Product.Price);
         }
 
-        public void PlaceOrder(int userId, int productId, string address)
+        private void LoadPastOrders()
         {
-            db.PlaceOrder(userId, productId, address);
-            LoadCartTotal();
-            System.Diagnostics.Debug.WriteLine($"PlaceOrder called for productId: {productId}");
+            var pastOrders = db.GetOrders(userId).Where(o => o.Address != "В корзине").ToList();
+            PastOrders = new ObservableCollection<Order>(pastOrders);
+        }
+
+        public void RemoveFromCart(int orderId)
+        {
+            db.RemoveOrder(orderId);
+            LoadCart();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using GoShip.Services;
 
 namespace GoShip.Views
@@ -40,7 +39,7 @@ namespace GoShip.Views
             NavigationService.Navigate(new LoginPage());
         }
 
-        private void EmployeeLogin_Click(object sender, MouseButtonEventArgs e)
+        private void EmployeeLogin_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new EmployeeLoginPage());
         }

@@ -1,0 +1,14 @@
+﻿<Page x:Class="GoShip.Views.CheckoutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="GoShip - Оформление заказа" 
+      Height="1000" 
+      Width="1600">
+    <Grid Background="White">
+        <TextBlock Text="Оформление заказа (в разработке)" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+    </Grid>
+</Page>

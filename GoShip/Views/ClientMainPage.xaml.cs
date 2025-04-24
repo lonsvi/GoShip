@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using GoShip.Models;
 using GoShip.ViewModels;
@@ -8,28 +9,39 @@ namespace GoShip.Views
     public partial class ClientMainPage : Page
     {
         private readonly int userId;
+        private readonly ClientMainViewModel viewModel;
+
         public ClientMainPage(int userId)
         {
             InitializeComponent();
             this.userId = userId;
-            DataContext = new ClientMainViewModel();
+            viewModel = new ClientMainViewModel(userId);
+            DataContext = viewModel; // Устанавливаем DataContext
         }
 
-        private void PlaceOrder_Click(object sender, RoutedEventArgs e)
+        private void Cart_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = DataContext as ClientMainViewModel;
-            var selectedProduct = productComboBox.SelectedItem as Product;
-            string address = txtAddress.Text;
+            NavigationService.Navigate(new CartPage(userId));
+        }
 
-            if (selectedProduct == null || string.IsNullOrEmpty(address))
+        private void Catalog_Click(object sender, RoutedEventArgs e)
+        {
+            // Уже находимся в каталоге
+        }
+
+        private void Support_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Переход в поддержку (в разработке)");
+        }
+
+        private void AddToCart_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null && button.Tag is int productId)
             {
-                MessageBox.Show("Выберите товар и укажите адрес доставки!");
-                return;
+                viewModel.PlaceOrder(userId, productId, "В корзине");
+                MessageBox.Show($"Товар с ID {productId} добавлен в корзину!");
             }
-
-            viewModel.PlaceOrder(userId, selectedProduct.Id, address);
-            MessageBox.Show("Заказ успешно оформлен!");
-            txtAddress.Text = "";
         }
     }
 }
