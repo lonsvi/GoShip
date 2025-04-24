@@ -119,10 +119,10 @@
                             <TextBlock FontSize="16" 
                                        Margin="10,5,0,0"
                                        Text="{Binding Status, StringFormat=Статус: {0}}"/>
-                            <!-- Комментарий покупателя (заглушка) -->
+                            <!-- Комментарий покупателя -->
                             <TextBlock FontSize="16" 
                                        Margin="10,5,0,0"
-                                       Text="Комментарий покупателя: Не звонить пж"/>
+                                       Text="{Binding Comment, StringFormat=Комментарий покупателя: {0}}"/>
                             <!-- Кнопки управления -->
                             <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
                                 <Button Style="{DynamicResource ButtonStyle1}"

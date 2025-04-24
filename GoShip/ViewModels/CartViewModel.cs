@@ -65,16 +65,16 @@ namespace GoShip.ViewModels
             LoadCart();
         }
 
-        public void ConfirmOrder(string address)
+        public void ConfirmOrder(string address, string comment) // Добавляем параметр comment
         {
             var items = CartItems.ToList();
             if (!items.Any())
                 return;
 
             decimal total = items.Sum(item => item.Product.Price * item.Quantity);
-            LastOrderTotal = total; // Сохраняем сумму заказа перед очисткой корзины
+            LastOrderTotal = total;
             string orderDate = DateTime.Now.ToString("yyyy-MM-dd");
-            int orderId = db.CreateOrder(userId, address, total, orderDate);
+            int orderId = db.CreateOrder(userId, address, total, orderDate, comment); // Передаём comment
 
             foreach (var item in items)
             {

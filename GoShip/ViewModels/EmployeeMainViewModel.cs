@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq; // Добавляем для LINQ
 using System.Runtime.CompilerServices;
 using GoShip.Models;
 using GoShip.Services;
@@ -10,7 +11,16 @@ namespace GoShip.ViewModels
     {
         private readonly DatabaseService db;
 
-        public ObservableCollection<Order> Orders { get; set; }
+        private ObservableCollection<Order> _orders;
+        public ObservableCollection<Order> Orders
+        {
+            get => _orders;
+            set
+            {
+                _orders = value;
+                OnPropertyChanged();
+            }
+        }
 
         public EmployeeMainViewModel()
         {
@@ -27,13 +37,21 @@ namespace GoShip.ViewModels
         public void MarkAsActive(int orderId)
         {
             db.UpdateOrderStatus(orderId, "Активный");
-            LoadOrders();
+            var order = Orders.FirstOrDefault(o => o.Id == orderId);
+            if (order != null)
+            {
+                order.Status = "Активный"; // Обновляем статус в коллекции
+            }
         }
 
         public void MarkAsCompleted(int orderId)
         {
             db.UpdateOrderStatus(orderId, "Завершён");
-            LoadOrders();
+            var order = Orders.FirstOrDefault(o => o.Id == orderId);
+            if (order != null)
+            {
+                order.Status = "Завершён"; // Обновляем статус в коллекции
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

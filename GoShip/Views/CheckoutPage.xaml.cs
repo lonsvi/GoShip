@@ -70,6 +70,7 @@ namespace GoShip.Views
             string cardNumber = CardNumberTextBox.Text;
             string cardDate = CardDateTextBox.Text;
             string cvv = CvvTextBox.Text;
+            string comment = CommentTextBox.Text; // Получаем комментарий
 
             // Проверка на пустые поля (кроме комментария)
             if (string.IsNullOrWhiteSpace(address))
@@ -111,8 +112,8 @@ namespace GoShip.Views
             // Сохраняем данные клиента
             db.SaveUserDetails(userId, name, email, address);
 
-            // Сохраняем заказ
-            viewModel.ConfirmOrder(address);
+            // Сохраняем заказ, передаём комментарий
+            viewModel.ConfirmOrder(address, comment);
 
             // Обновляем данные во всплывающем окне
             AddressDisplay.Text = $"Адрес: {address}";

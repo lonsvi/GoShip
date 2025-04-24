@@ -52,6 +52,7 @@ namespace GoShip.Services
                         OrderDate TEXT NOT NULL,
                         Total DECIMAL NOT NULL,
                         Status TEXT NOT NULL DEFAULT 'Активный',
+                        Comment TEXT,  -- Добавляем столбец для комментария
                         FOREIGN KEY(UserId) REFERENCES Users(Id)
                     );
                     CREATE TABLE IF NOT EXISTS OrderItems (
@@ -74,26 +75,26 @@ namespace GoShip.Services
                 var command = new SQLiteCommand(sql, connection);
                 command.ExecuteNonQuery();
 
-                // Проверка и добавление столбца Status, если его нет
+                // Проверка и добавление столбца Comment, если его нет
                 string checkColumnSql = "PRAGMA table_info(Orders);";
                 command = new SQLiteCommand(checkColumnSql, connection);
-                bool hasStatusColumn = false;
+                bool hasCommentColumn = false;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         string columnName = reader.GetString(1);
-                        if (columnName == "Status")
+                        if (columnName == "Comment")
                         {
-                            hasStatusColumn = true;
+                            hasCommentColumn = true;
                             break;
                         }
                     }
                 }
 
-                if (!hasStatusColumn)
+                if (!hasCommentColumn)
                 {
-                    string addColumnSql = "ALTER TABLE Orders ADD COLUMN Status TEXT NOT NULL DEFAULT 'Активный';";
+                    string addColumnSql = "ALTER TABLE Orders ADD COLUMN Comment TEXT;";
                     command = new SQLiteCommand(addColumnSql, connection);
                     command.ExecuteNonQuery();
                 }
@@ -264,7 +265,7 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment
                     FROM Orders o
                     WHERE o.UserId = @userId";
                 var command = new SQLiteCommand(sql, connection);
@@ -281,6 +282,7 @@ namespace GoShip.Services
                             OrderDate = reader.GetString(3),
                             Total = reader.GetDecimal(4),
                             Status = reader.GetString(5),
+                            Comment = reader.IsDBNull(6) ? "Нет комментария" : reader.GetString(6),
                             Items = new List<OrderItem>()
                         };
                         orders.Add(order);
@@ -334,7 +336,7 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status, o.Comment
                     FROM Orders o";
                 var command = new SQLiteCommand(sql, connection);
                 using (var reader = command.ExecuteReader())
@@ -349,6 +351,7 @@ namespace GoShip.Services
                             OrderDate = reader.GetString(3),
                             Total = reader.GetDecimal(4),
                             Status = reader.GetString(5),
+                            Comment = reader.IsDBNull(6) ? "Нет комментария" : reader.GetString(6),
                             Items = new List<OrderItem>()
                         };
                         orders.Add(order);
@@ -408,20 +411,21 @@ namespace GoShip.Services
             }
         }
 
-        public int CreateOrder(int userId, string address, decimal total, string orderDate)
+        public int CreateOrder(int userId, string address, decimal total, string orderDate, string comment)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
                 string sql = @"
-                    INSERT INTO Orders (UserId, Address, OrderDate, Total, Status) 
-                    VALUES (@userId, @address, @orderDate, @total, 'Активный');
+                    INSERT INTO Orders (UserId, Address, OrderDate, Total, Status, Comment) 
+                    VALUES (@userId, @address, @orderDate, @total, 'Активный', @comment);
                     SELECT last_insert_rowid();";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@userId", userId);
                 command.Parameters.AddWithValue("@address", address);
                 command.Parameters.AddWithValue("@orderDate", orderDate);
                 command.Parameters.AddWithValue("@total", total);
+                command.Parameters.AddWithValue("@comment", comment ?? "Нет комментария");
                 return Convert.ToInt32(command.ExecuteScalar());
             }
         }
