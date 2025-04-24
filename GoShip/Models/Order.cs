@@ -9,6 +9,7 @@ namespace GoShip.Models
         public string Address { get; set; }
         public string OrderDate { get; set; }
         public decimal Total { get; set; }
+        public string Status { get; set; }
         public List<OrderItem> Items { get; set; }
     }
 }

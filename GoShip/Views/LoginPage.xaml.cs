@@ -27,14 +27,17 @@ namespace GoShip.Views
             {
                 int userId = result.Value.userId;
                 string role = result.Value.role;
-                MessageBox.Show($"Вход успешен! Роль: {role}");
                 if (role == "Client")
                 {
                     NavigationService.Navigate(new ClientMainPage(userId));
                 }
-                else if (role == "Employee")
+                else if (role == "Employee" || role == "Admin")
                 {
-                    NavigationService.Navigate(new EmployeeMainPage(userId));
+                    NavigationService.Navigate(new EmployeeLoginPage());
+                }
+                else
+                {
+                    MessageBox.Show("Неизвестная роль пользователя!");
                 }
             }
             else

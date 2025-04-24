@@ -83,6 +83,7 @@
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="ViewModels\CartViewModel.cs" />
     <Compile Include="ViewModels\ClientMainViewModel.cs" />
+    <Compile Include="ViewModels\EmployeeMainViewModel.cs" />
     <Compile Include="Views\CartPage.xaml.cs">
       <DependentUpon>CartPage.xaml</DependentUpon>
     </Compile>

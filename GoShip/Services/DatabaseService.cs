@@ -51,6 +51,7 @@ namespace GoShip.Services
                         Address TEXT NOT NULL,
                         OrderDate TEXT NOT NULL,
                         Total DECIMAL NOT NULL,
+                        Status TEXT NOT NULL DEFAULT 'Активный',
                         FOREIGN KEY(UserId) REFERENCES Users(Id)
                     );
                     CREATE TABLE IF NOT EXISTS OrderItems (
@@ -72,6 +73,30 @@ namespace GoShip.Services
                 ";
                 var command = new SQLiteCommand(sql, connection);
                 command.ExecuteNonQuery();
+
+                // Проверка и добавление столбца Status, если его нет
+                string checkColumnSql = "PRAGMA table_info(Orders);";
+                command = new SQLiteCommand(checkColumnSql, connection);
+                bool hasStatusColumn = false;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string columnName = reader.GetString(1);
+                        if (columnName == "Status")
+                        {
+                            hasStatusColumn = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasStatusColumn)
+                {
+                    string addColumnSql = "ALTER TABLE Orders ADD COLUMN Status TEXT NOT NULL DEFAULT 'Активный';";
+                    command = new SQLiteCommand(addColumnSql, connection);
+                    command.ExecuteNonQuery();
+                }
 
                
             }
@@ -239,7 +264,7 @@ namespace GoShip.Services
             {
                 connection.Open();
                 string sql = @"
-                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status
                     FROM Orders o
                     WHERE o.UserId = @userId";
                 var command = new SQLiteCommand(sql, connection);
@@ -255,6 +280,7 @@ namespace GoShip.Services
                             Address = reader.GetString(2),
                             OrderDate = reader.GetString(3),
                             Total = reader.GetDecimal(4),
+                            Status = reader.GetString(5),
                             Items = new List<OrderItem>()
                         };
                         orders.Add(order);
@@ -301,14 +327,95 @@ namespace GoShip.Services
             return orders;
         }
 
+        public List<Order> GetAllOrders()
+        {
+            var orders = new List<Order>();
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = @"
+                    SELECT o.Id, o.UserId, o.Address, o.OrderDate, o.Total, o.Status
+                    FROM Orders o";
+                var command = new SQLiteCommand(sql, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var order = new Order
+                        {
+                            Id = reader.GetInt32(0),
+                            UserId = reader.GetInt32(1),
+                            Address = reader.GetString(2),
+                            OrderDate = reader.GetString(3),
+                            Total = reader.GetDecimal(4),
+                            Status = reader.GetString(5),
+                            Items = new List<OrderItem>()
+                        };
+                        orders.Add(order);
+                    }
+                }
+
+                foreach (var order in orders)
+                {
+                    string itemsSql = @"
+                        SELECT oi.OrderId, oi.ProductId, oi.ProductName, oi.ProductPrice, oi.Quantity,
+                               p.Id, p.Name, p.Price, p.ImageUrl, p.Calories, p.Proteins, p.Fats, p.Carbohydrates
+                        FROM OrderItems oi
+                        JOIN Products p ON oi.ProductId = p.Id
+                        WHERE oi.OrderId = @orderId";
+                    command = new SQLiteCommand(itemsSql, connection);
+                    command.Parameters.AddWithValue("@orderId", order.Id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            order.Items.Add(new OrderItem
+                            {
+                                OrderId = reader.GetInt32(0),
+                                ProductId = reader.GetInt32(1),
+                                ProductName = reader.GetString(2),
+                                ProductPrice = reader.GetDecimal(3),
+                                Quantity = reader.GetInt32(4),
+                                Product = new Product
+                                {
+                                    Id = reader.GetInt32(5),
+                                    Name = reader.GetString(6),
+                                    Price = reader.GetDecimal(7),
+                                    ImageUrl = reader.GetString(8),
+                                    Calories = reader.GetInt32(9),
+                                    Proteins = reader.GetDecimal(10),
+                                    Fats = reader.GetDecimal(11),
+                                    Carbohydrates = reader.GetDecimal(12)
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            return orders;
+        }
+
+        public void UpdateOrderStatus(int orderId, string status)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string sql = "UPDATE Orders SET Status = @status WHERE Id = @orderId";
+                var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@status", status);
+                command.Parameters.AddWithValue("@orderId", orderId);
+                command.ExecuteNonQuery();
+            }
+        }
+
         public int CreateOrder(int userId, string address, decimal total, string orderDate)
         {
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
                 string sql = @"
-                    INSERT INTO Orders (UserId, Address, OrderDate, Total) 
-                    VALUES (@userId, @address, @orderDate, @total);
+                    INSERT INTO Orders (UserId, Address, OrderDate, Total, Status) 
+                    VALUES (@userId, @address, @orderDate, @total, 'Активный');
                     SELECT last_insert_rowid();";
                 var command = new SQLiteCommand(sql, connection);
                 command.Parameters.AddWithValue("@userId", userId);

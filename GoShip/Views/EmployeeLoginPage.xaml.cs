@@ -23,11 +23,18 @@ namespace GoShip.Views
 
             var db = new DatabaseService();
             var result = db.Authenticate(login, password);
-            if (result.HasValue && result.Value.role == "Employee")
+            if (result.HasValue)
             {
                 int userId = result.Value.userId;
-                MessageBox.Show("Вход успешен!");
-                NavigationService.Navigate(new EmployeeMainPage(userId));
+                string role = result.Value.role;
+                if (role == "Employee" || role == "Admin")
+                {
+                    NavigationService.Navigate(new EmployeeMainPage(userId));
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль для сотрудника!");
+                }
             }
             else
             {
