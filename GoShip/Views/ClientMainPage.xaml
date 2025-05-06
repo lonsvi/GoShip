@@ -7,100 +7,53 @@
       Title="GoShip - Клиент" 
       Height="1000" 
       Width="1600">
-    <Page.Resources>
-        <!-- Стили для кнопок -->
-        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
-        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
-        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true" CornerRadius="7,7,7,7">
-                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- Стиль для прямоугольников (контейнеров блюд) -->
-        <Style x:Key="RectangleStyle1" TargetType="{x:Type Rectangle}">
-            <Setter Property="RadiusX" Value="7"/>
-            <Setter Property="RadiusY" Value="7"/>
-            <Setter Property="Stroke" Value="Gray"/>
-            <Setter Property="StrokeThickness" Value="1"/>
-        </Style>
-    </Page.Resources>
     <Grid Background="White">
         <!-- Верхняя панель -->
-        <Button Style="{DynamicResource ButtonStyle1}"
-                Content="Корзина" 
-                Width="85" 
-                Height="30" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Margin="10,10,0,0"
-                Click="Cart_Click"/>
+        <Border BorderBrush="#FFABABAB" BorderThickness="1" Margin="20,10,20,930" Height="60" CornerRadius="10">
+            <Grid>
+                <Button Style="{DynamicResource ButtonStyle1}"
+                        Content="Корзина" 
+                        Width="100" 
+                        Height="40" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Center" 
+                        Margin="20,0,0,0"
+                        Click="Cart_Click"/>
+                <TextBlock FontSize="20" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextColor}"
+                           HorizontalAlignment="Left" 
+                           VerticalAlignment="Center" 
+                           Margin="150,0,0,0" 
+                           Text="Сумма корзины: "/>
+                <TextBlock FontSize="20" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextColor}"
+                           HorizontalAlignment="Left" 
+                           VerticalAlignment="Center" 
+                           Margin="350,0,0,0" 
+                           Text="{Binding CartTotal, StringFormat={}{0} руб.}"/>
+                <Button Style="{DynamicResource ButtonStyle1}"
+                        Content="Каталог" 
+                        Width="100" 
+                        Height="40" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,150,0"
+                        Click="Catalog_Click"/>
+                <Button Style="{DynamicResource ButtonStyle1}"
+                        Content="Поддержка" 
+                        Width="100" 
+                        Height="40" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,20,0"
+                        Click="Support_Click"/>
+            </Grid>
+        </Border>
 
-        <TextBlock FontSize="24" 
-                   FontWeight="Bold" 
-                   HorizontalAlignment="Left" 
-                   VerticalAlignment="Top" 
-                   Margin="113,9,0,0" 
-                   Width="254"
-                   Text="Сумма корзины: "/>
-        <TextBlock FontSize="24" 
-                   FontWeight="Bold" 
-                   HorizontalAlignment="Left" 
-                   VerticalAlignment="Top" 
-                   Margin="381,8,0,0" 
-                   Width="116"
-                   Text="{Binding CartTotal, StringFormat={}{0} руб.}"/>
-        <Button Style="{DynamicResource ButtonStyle1}"
-                Content="Каталог" 
-                Width="85" 
-                Height="30" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Margin="1384,8,0,0"
-                Click="Catalog_Click"/>
-        <Button Style="{DynamicResource ButtonStyle1}"
-                Content="Поддержка" 
-                Width="85" 
-                Height="30" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Margin="1489,8,0,0"
-                Click="Support_Click"/>
-
-        <!-- Сетка блюд с прокруткой -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="85,105,85,0">
+        <!-- Каталог -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="50,80,50,20">
             <ItemsControl ItemsSource="{Binding Products}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -109,35 +62,32 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Width="314" Margin="10">
-                            <!-- Прямоугольник-контейнер для блюда -->
+                        <StackPanel Width="300" Margin="10" Style="{StaticResource FadeInStyle}">
                             <Rectangle Style="{DynamicResource RectangleStyle1}" 
-                                       Height="366" 
-                                       Width="314"/>
-                            <!-- Изображение блюда -->
+                                       Height="380" 
+                                       Width="300"/>
                             <Image Source="{Binding ImageUrl}" 
-                                   Height="300" 
-                                   Width="300" 
-                                   Margin="0,-350,0,0"/>
-                            <!-- Название блюда -->
-                            <TextBlock FontSize="24" 
+                                   Height="280" 
+                                   Width="260" 
+                                   Margin="20,-360,20,0"/>
+                            <TextBlock FontSize="20" 
                                        FontWeight="Bold" 
+                                       Foreground="{StaticResource TextColor}"
                                        HorizontalAlignment="Left" 
-                                       Margin="10,20,0,0" 
+                                       Margin="20,10,0,0" 
                                        Text="{Binding Name}"/>
-                            <!-- Цена -->
-                            <TextBlock FontSize="24" 
+                            <TextBlock FontSize="20" 
                                        FontWeight="Bold" 
+                                       Foreground="{StaticResource TextColor}"
                                        HorizontalAlignment="Left" 
-                                       Margin="10,5,0,0" 
+                                       Margin="20,5,0,0" 
                                        Text="{Binding Price, StringFormat={}{0} руб.}"/>
-                            <!-- Кнопка "Добавить" -->
                             <Button Style="{DynamicResource ButtonStyle1}"
                                     Content="Добавить" 
-                                    Width="141" 
-                                    Height="30" 
-                                    HorizontalAlignment="Left" 
-                                    Margin="150,5,0,0"
+                                    Width="100" 
+                                    Height="40" 
+                                    HorizontalAlignment="Right" 
+                                    Margin="0,10,20,10"
                                     Click="AddToCart_Click"
                                     Tag="{Binding Id}"/>
                         </StackPanel>

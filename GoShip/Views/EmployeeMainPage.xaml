@@ -2,101 +2,51 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:av="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="av" 
       Title="GoShip - Администрация" 
       Height="1000" 
       Width="1600">
-    <Page.Resources>
-        <!-- Стили для кнопок -->
-        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
-        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
-        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true" CornerRadius="7,7,7,7">
-                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- Стиль для прямоугольников -->
-        <Style x:Key="RectangleStyle1" TargetType="{x:Type Rectangle}">
-            <Setter Property="RadiusX" Value="7"/>
-            <Setter Property="RadiusY" Value="7"/>
-            <Setter Property="Stroke" Value="Gray"/>
-            <Setter Property="StrokeThickness" Value="1"/>
-        </Style>
-    </Page.Resources>
     <Grid Background="White">
         <!-- Заголовок -->
-        <TextBlock FontSize="36" 
-                   FontWeight="Bold" 
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Top" 
-                   Margin="0,20,0,0"
-                   Text="ЗАКАЗЫ"/>
-
-        <!-- Кнопка поддержки -->
-        <Button Style="{DynamicResource ButtonStyle1}"
-                Content="Поддержка" 
-                Width="85" 
-                Height="30" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Top" 
-                Margin="0,10,10,0"
-                Click="Support_Click"/>
+        <Border BorderBrush="#FFABABAB" BorderThickness="1" Margin="20,10,20,930" Height="60" CornerRadius="10">
+            <Grid>
+                <TextBlock FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextColor}"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" 
+                           Text="ЗАКАЗЫ"/>
+                <Button Style="{DynamicResource ButtonStyle1}"
+                        Content="Поддержка" 
+                        Width="100" 
+                        Height="40" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,20,0"
+                        Click="Support_Click"/>
+            </Grid>
+        </Border>
 
         <!-- Список заказов -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="50,80,50,0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="50,80,50,20">
             <ItemsControl ItemsSource="{Binding Orders}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,10,0,10">
-                            <!-- Контейнер заказа -->
+                        <StackPanel Margin="0,10" Style="{StaticResource FadeInStyle}">
                             <Rectangle Style="{DynamicResource RectangleStyle1}" 
-                                       Height="Auto"/>
-                            <!-- Автоматическая высота -->
-                            <!-- Контент заказа -->
-                            <StackPanel Margin="10">
-                                <!-- Номер заказа -->
-                                <TextBlock FontSize="18" 
-                                           FontWeight="Bold"
+                                       Height="Auto" 
+                                       Width="800"/>
+                            <StackPanel Margin="20">
+                                <TextBlock FontSize="20" 
+                                           FontWeight="Bold" 
+                                           Foreground="{StaticResource TextColor}"
                                            Text="{Binding Id, StringFormat=Заказ №{0}}"/>
-                                <!-- Список товаров -->
                                 <ItemsControl ItemsSource="{Binding Items}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock FontSize="16">
+                                            <TextBlock FontSize="16" 
+                                                       Foreground="{StaticResource TextColor}">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0} x{1}">
                                                         <Binding Path="ProductName"/>
@@ -107,48 +57,47 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <!-- Адрес -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding Address, StringFormat=Адрес: {0}}"/>
-                                <!-- Время заказа -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding OrderDate, StringFormat=Время заказа: {0}}"/>
-                                <!-- Время доставки -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding DeliveryTime, StringFormat=Доставить к: {0}}"/>
-                                <!-- Сумма -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding Total, StringFormat=Сумма заказа: {0} руб.}"/>
-                                <!-- Статус -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding Status, StringFormat=Статус: {0}}"/>
-                                <!-- Комментарий покупателя -->
                                 <TextBlock FontSize="16" 
+                                           Foreground="{StaticResource TextColor}"
                                            Margin="0,5,0,0"
                                            Text="{Binding Comment, StringFormat=Комментарий покупателя: {0}}"/>
-                                <!-- Кнопки управления -->
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
                                     <Button Style="{DynamicResource ButtonStyle1}"
                                             Content="Активный" 
                                             Width="100" 
-                                            Height="30" 
+                                            Height="40" 
                                             Margin="0,0,10,0"
                                             Click="MarkAsActive_Click"
                                             Tag="{Binding Id}"/>
                                     <Button Style="{DynamicResource ButtonStyle1}"
                                             Content="Завершён" 
                                             Width="100" 
-                                            Height="30" 
+                                            Height="40" 
                                             Click="MarkAsCompleted_Click"
                                             Tag="{Binding Id}"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Grid>
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

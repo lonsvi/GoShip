@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.IO;
+using QRCoder;
 using GoShip.Services;
 using GoShip.ViewModels;
 
@@ -115,6 +118,27 @@ namespace GoShip.Views
             // Сохраняем заказ, передаём deliveryTime
             viewModel.ConfirmOrder(address, comment, deliveryTime);
 
+            // Формируем строку для QR-кода
+            string qrContent = $"Адрес: {address}\nВремя доставки: {deliveryTime}\nСумма: {viewModel.LastOrderTotal} руб.";
+            // Генерируем QR-код
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+            PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
+            byte[] qrCodeBytes = qrCode.GetGraphic(20); // 20 — размер пикселя для модуля QR-кода
+
+            // Преобразуем байты в изображение для WPF
+            using (MemoryStream memoryStream = new MemoryStream(qrCodeBytes))
+            {
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                // Устанавливаем изображение в Image
+                QrCodeImage.Source = bitmapImage;
+            }
+
             // Обновляем данные во всплывающем окне
             AddressDisplay.Text = $"Адрес: {address}";
             DeliveryTimeDisplay.Text = $"Заказ будет доставлен к: {deliveryTime}";
@@ -122,8 +146,8 @@ namespace GoShip.Views
             // Показываем всплывающее окно
             OverlayGrid.Visibility = Visibility.Visible;
 
-            // Ждём 5 секунд
-            await Task.Delay(5000);
+            // Ждём 10 секунд
+            await Task.Delay(10000);
 
             // Переходим на страницу каталога
             OverlayGrid.Visibility = Visibility.Collapsed;
