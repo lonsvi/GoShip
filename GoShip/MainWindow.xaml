@@ -1,13 +1,15 @@
 ﻿<Window x:Class="GoShip.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="GoShip" 
-        Height="550" Width="800"
+        Title="GoShip"
+        Height="1000" Width="1600"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" 
+               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+               Width="1600" Height="1000"/>
     </Grid>
 </Window>

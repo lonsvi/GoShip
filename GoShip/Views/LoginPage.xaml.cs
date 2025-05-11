@@ -69,5 +69,6 @@ namespace GoShip.Views
         {
             NavigationService.Navigate(new EmployeeLoginPage());
         }
+
     }
 }

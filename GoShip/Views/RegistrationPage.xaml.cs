@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using GoShip.Services;
 
 namespace GoShip.Views
@@ -11,7 +12,20 @@ namespace GoShip.Views
         {
             InitializeComponent();
         }
+        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
+        }
 
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this).Close();
+        }
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                Window.GetWindow(this).DragMove();
+        }
         private void Register_Click(object sender, RoutedEventArgs e)
         {
             string login = txtLogin.Text;

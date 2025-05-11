@@ -11,7 +11,9 @@
     <Page.Resources>
         <!-- Цвета -->
         <SolidColorBrush x:Key="AcrylicBackground" Color="#F5F5F5" Opacity="0.85"/>
+        <!-- Увеличена прозрачность для акрилового эффекта -->
         <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF" Opacity="0.9"/>
+        <!-- Лёгкая прозрачность -->
         <SolidColorBrush x:Key="TextColor" Color="#212121"/>
         <SolidColorBrush x:Key="ButtonBackground" Color="#FFFFFF" Opacity="0.65"/>
         <SolidColorBrush x:Key="ButtonHover" Color="#FFFFFF" Opacity="0.85"/>
@@ -63,10 +65,8 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8" SnapsToDevicePixels="True">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image Source="{TemplateBinding Tag}" Width="24" Height="24" Margin="0,0,8,0"/>
-                                <ContentPresenter Margin="{TemplateBinding Padding}"/>
-                            </StackPanel>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -146,14 +146,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Source="{TemplateBinding Tag}" Width="24" Height="24" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                                <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" Margin="{TemplateBinding Padding}"/>
-                            </Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
@@ -190,14 +183,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Source="{TemplateBinding Tag}" Width="24" Height="24" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                                <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" Margin="{TemplateBinding Padding}"/>
-                            </Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
@@ -356,9 +342,9 @@
                 </Grid>
 
                 <!-- Форма входа -->
-                <StackPanel Width="400" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,-20,0,0">
+                <StackPanel Width="400" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0">
                     <!-- Логотип -->
-                    <Image x:Name="Logo" Width="100" Height="100" Margin="0,0,0,20"
+                    <Image x:Name="Logo" Width="75" Height="71" Margin="0,0,0,20"
                            Style="{StaticResource LogoAnimationStyle}">
                         <Image.Source>
                             /Images/logo.png
@@ -371,6 +357,8 @@
                                Foreground="{StaticResource TextColor}"
                                Style="{StaticResource FadeInTitleStyle}" Width="85"/>
 
+                    <!-- Заголовок -->
+
                     <!-- Поле логина -->
                     <StackPanel Style="{StaticResource FadeInFieldsStyle}">
                         <TextBlock Text="Логин"
@@ -381,9 +369,7 @@
                         <TextBox x:Name="txtLogin"
                                  Style="{StaticResource FluentTextBoxStyle}"
                                  Height="40"
-                                 Margin="0,5,0,10"
-                                 Tag="/Images/Icons/user.png"/>
-                        <!-- Путь к иконке пользователя -->
+                                 Margin="0,5,0,10"/>
                     </StackPanel>
 
                     <!-- Поле пароля -->
@@ -396,9 +382,7 @@
                         <PasswordBox x:Name="txtPassword"
                                      Style="{StaticResource FluentPasswordBoxStyle}"
                                      Height="40"
-                                     Margin="0,5,0,20"
-                                     Tag="/Images/Icons/lock.png"/>
-                        <!-- Путь к иконке замка -->
+                                     Margin="0,5,0,20"/>
                     </StackPanel>
 
                     <!-- Кнопки -->
@@ -408,24 +392,18 @@
                                 Width="185"
                                 Height="40"
                                 Margin="0,0,0,10"
-                                Click="Login_Click"
-                                Tag="/Images/Icons/login.png"/>
-                        <!-- Путь к иконке входа -->
+                                Click="Login_Click"/>
                         <Button Content="Регистрация"
                                 Style="{StaticResource FluentButtonStyle}"
                                 Width="185"
                                 Height="40"
                                 Margin="0,0,0,10"
-                                Click="Register_Click"
-                                Tag="/Images/Icons/register.png"/>
-                        <!-- Путь к иконке регистрации -->
+                                Click="Register_Click"/>
                         <Button Content="Войти как сотрудник"
                                 Style="{StaticResource FluentButtonStyle}"
                                 Width="185"
                                 Height="40"
-                                Click="EmployeeLogin_Click"
-                                Tag="/Images/Icons/employee.png"/>
-                        <!-- Путь к иконке сотрудника -->
+                                Click="EmployeeLogin_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

@@ -196,7 +196,9 @@
       <Version>4.0.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Images\logo.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\user.png" />
   </ItemGroup>
