@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using GoShip.ViewModels;
 
+
 namespace GoShip.Views
 {
     public partial class CartPage : Page

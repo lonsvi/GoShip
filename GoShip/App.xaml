@@ -2,9 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GoShip"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            
+            
             <!-- Цвета -->
             <SolidColorBrush x:Key="Button.Background" Color="#FFFFFFFF"/>
             <SolidColorBrush x:Key="Button.Border" Color="#FFABABAB"/>
@@ -148,9 +151,24 @@
             <Style x:Key="RectangleStyle1" TargetType="{x:Type Rectangle}">
                 <Setter Property="Stroke" Value="{StaticResource BorderColor}"/>
                 <Setter Property="StrokeThickness" Value="1"/>
-                <Setter Property="Fill" Value="#FFFFFFFF"/>
+                <Setter Property="Fill" Value="#20FFFFFF"/>
+                <!-- Полупрозрачный белый фон -->
                 <Setter Property="RadiusX" Value="10"/>
                 <Setter Property="RadiusY" Value="10"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <BlurEffect Radius="10" KernelType="Gaussian" />
+                        <!-- Эффект размытия -->
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="10" 
+                                          ShadowDepth="0" 
+                                          Color="#66000000"/>
+                        <!-- Мягкая тень -->
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- Анимация появления -->
