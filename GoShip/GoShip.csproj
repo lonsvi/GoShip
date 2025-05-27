@@ -189,6 +189,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Avalonia.BuildServices">
+      <Version>0.0.31</Version>
+    </PackageReference>
     <PackageReference Include="MaterialDesignThemes">
       <Version>5.2.1</Version>
     </PackageReference>

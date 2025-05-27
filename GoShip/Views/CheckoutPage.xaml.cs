@@ -6,6 +6,9 @@ using System.IO;
 using QRCoder;
 using GoShip.Services;
 using GoShip.ViewModels;
+using System.Linq;
+using System;
+using System.Windows.Input;
 
 namespace GoShip.Views
 {
@@ -33,22 +36,6 @@ namespace GoShip.Views
             AddressTextBox.Text = address;
         }
 
-        private void SaveDetails_Click(object sender, RoutedEventArgs e)
-        {
-            string name = NameTextBox.Text;
-            string email = EmailTextBox.Text;
-            string address = AddressTextBox.Text;
-
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(address))
-            {
-                MessageBox.Show("Пожалуйста, заполните все поля!");
-                return;
-            }
-
-            db.SaveUserDetails(userId, name, email, address);
-            MessageBox.Show("Данные сохранены!");
-        }
-
         private void Cart_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new CartPage(userId));
@@ -63,6 +50,42 @@ namespace GoShip.Views
         {
             MessageBox.Show("Переход в поддержку (в разработке)");
         }
+
+        private void SaveDetails_Click(object sender, RoutedEventArgs e)
+        {
+            string address = AddressTextBox.Text;
+            string name = NameTextBox.Text;
+            string email = EmailTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(address) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email))
+            {
+                MessageBox.Show("Пожалуйста, заполните все поля: адрес, имя и email!");
+                return;
+            }
+
+            db.SaveUserDetails(userId, name, email, address);
+            MessageBox.Show("Данные успешно сохранены!");
+        }
+
+        private void SaveCardData_Click(object sender, RoutedEventArgs e)
+        {
+            string cardNumber = CardNumberTextBox.Text;
+            string cardDate = CardDateTextBox.Text;
+            string cvv = CvvTextBox.Text;
+            string comment = CommentTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(cardNumber) || string.IsNullOrWhiteSpace(cardDate) || string.IsNullOrWhiteSpace(cvv))
+            {
+                MessageBox.Show("Пожалуйста, заполните все поля: номер карты, дата/год и CVV!");
+                return;
+            }
+
+            //// Здесь можно сохранить данные карты в базу (например, в таблицу UserCard)
+            //db.GetCartItems(userId, cardNumber, cardDate, cvv, comment);
+            //MessageBox.Show("Данные карты успешно сохранены!");
+        }
+
+
 
         private async void ConfirmOrder_Click(object sender, RoutedEventArgs e)
         {
@@ -115,8 +138,28 @@ namespace GoShip.Views
             // Сохраняем данные клиента
             db.SaveUserDetails(userId, name, email, address);
 
-            // Сохраняем заказ, передаём deliveryTime
-            viewModel.ConfirmOrder(address, comment, deliveryTime);
+            // Логика оформления заказа
+            var items = viewModel.CartItems.ToList();
+            if (!items.Any())
+            {
+                MessageBox.Show("Корзина пуста!");
+                return;
+            }
+
+            decimal total = items.Sum(item => item.Product.Price * item.Quantity);
+            viewModel.LastOrderTotal = total;
+            string orderDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            int orderId = db.CreateOrder(userId, address, total, orderDate, comment, deliveryTime);
+
+            foreach (var item in items)
+            {
+                db.AddOrderItem(orderId, item.ProductId, item.Product.Name, item.Product.Price, item.Quantity);
+            }
+
+            db.ClearCart(userId);
+            viewModel.LoadCart();
+            viewModel.LoadPastOrders();
+            MessageBox.Show("Заказ успешно оформлен!");
 
             // Формируем строку для QR-кода
             string qrContent = $"Адрес: {address}\nВремя доставки: {deliveryTime}\nСумма: {viewModel.LastOrderTotal} руб.";
@@ -153,5 +196,26 @@ namespace GoShip.Views
             OverlayGrid.Visibility = Visibility.Collapsed;
             NavigationService.Navigate(new ClientMainPage(userId));
         }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+                Window.GetWindow(this)?.DragMove();
+        }
+
+        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            var window = Window.GetWindow(this);
+            if (window != null)
+            {
+                window.WindowState = WindowState.Minimized;
+            }
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
+        }
     }
+
 }

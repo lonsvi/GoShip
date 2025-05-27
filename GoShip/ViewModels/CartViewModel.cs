@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
 using GoShip.Models;
 using GoShip.Services;
 
@@ -44,16 +46,17 @@ namespace GoShip.ViewModels
             db = new DatabaseService();
             LoadCart();
             LoadPastOrders();
+            RemoveFromCartCommand = new RelayCommand<int>(RemoveFromCart);
         }
 
-        private void LoadCart()
+        public void LoadCart()
         {
             var cartItems = db.GetCartItems(userId);
             CartItems = new ObservableCollection<CartItem>(cartItems);
             CartTotal = CartItems.Sum(item => item.Product.Price * item.Quantity);
         }
 
-        private void LoadPastOrders()
+        public void LoadPastOrders()
         {
             var pastOrders = db.GetOrders(userId);
             PastOrders = new ObservableCollection<Order>(pastOrders);
@@ -63,27 +66,7 @@ namespace GoShip.ViewModels
         {
             db.RemoveFromCart(userId, productId);
             LoadCart();
-        }
-
-        public void ConfirmOrder(string address, string comment, string deliveryTime)
-        {
-            var items = CartItems.ToList();
-            if (!items.Any())
-                return;
-
-            decimal total = items.Sum(item => item.Product.Price * item.Quantity);
-            LastOrderTotal = total;
-            string orderDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            int orderId = db.CreateOrder(userId, address, total, orderDate, comment, deliveryTime);
-
-            foreach (var item in items)
-            {
-                db.AddOrderItem(orderId, item.ProductId, item.Product.Name, item.Product.Price, item.Quantity);
-            }
-
-            db.ClearCart(userId);
-            LoadCart();
-            LoadPastOrders();
+            MessageBox.Show($"Продукт с ID {productId} удалён из корзины!");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -91,5 +74,52 @@ namespace GoShip.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public ICommand RemoveFromCartCommand { get; }
+    }
+
+    // Класс RelayCommand для команд
+    public class RelayCommand : ICommand
+    {
+        private readonly Action _execute;
+        private readonly Func<bool> _canExecute;
+
+        public RelayCommand(Action execute, Func<bool> canExecute = null)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+
+        public void Execute(object parameter) => _execute();
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Func<T, bool> _canExecute;
+
+        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke((T)parameter) ?? true;
+
+        public void Execute(object parameter) => _execute((T)parameter);
     }
 }
