@@ -302,7 +302,7 @@
                                                 <Image Source="{Binding ImageUrl}"
                                        Stretch="UniformToFill"
                                        Width="260"
-                                       Height="280"
+                                       Height="260"
                                        ClipToBounds="True"/>
                                             </Border>
                                             <TextBlock FontSize="20"

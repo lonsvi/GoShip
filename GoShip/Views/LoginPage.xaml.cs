@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GoShip.Services;
@@ -25,18 +26,30 @@ namespace GoShip.Views
             if (e.ChangedButton == MouseButton.Left)
                 Window.GetWindow(this).DragMove();
         }
-        private void Login_Click(object sender, RoutedEventArgs e)
+        private async void Login_Click(object sender, RoutedEventArgs e)
         {
+            // Скрываем форму, показываем спиннер
+            LoginFormPanel.Visibility = Visibility.Collapsed;
+            LoaderSpinner.Visibility = Visibility.Visible;
+
             string login = txtLogin.Text;
             string password = txtPassword.Password;
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
+                LoaderSpinner.Visibility = Visibility.Collapsed;
+                LoginFormPanel.Visibility = Visibility.Visible;
                 MessageBox.Show("Заполните все поля!");
                 return;
             }
 
+            // Имитация задержки (например, запрос к БД)
+            await Task.Delay(1000);
+
             var db = new DatabaseService();
             var result = db.Authenticate(login, password);
+            LoaderSpinner.Visibility = Visibility.Collapsed;
+            LoginFormPanel.Visibility = Visibility.Visible;
+
             if (result.HasValue)
             {
                 int userId = result.Value.userId;

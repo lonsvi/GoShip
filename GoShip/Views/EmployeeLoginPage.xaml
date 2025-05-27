@@ -340,14 +340,8 @@
                 </Grid>
 
                 <!-- Форма входа для сотрудников -->
-                <StackPanel Width="400" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <StackPanel Width="400" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,119,0,0" Height="335">
                     <!-- Логотип -->
-                    <Image x:Name="Logo" Width="81" Height="73" Margin="0,0,0,20"
-                           Style="{StaticResource LogoAnimationStyle}">
-                        <Image.Source>
-                            /Images/logo.png
-                        </Image.Source>
-                    </Image>
                     <TextBlock Text="Вход как сотрудник"
                                FontFamily="Segoe UI"
                                FontSize="32"
@@ -363,10 +357,21 @@
                                    FontSize="14"
                                    Foreground="{StaticResource TextColor}"
                                    Margin="0,0,0,5"/>
-                        <TextBox x:Name="txtLogin"
-                                 Style="{StaticResource FluentTextBoxStyle}"
-                                 Height="40"
-                                 Margin="0,5,0,10"/>
+                        <Grid>
+                            <TextBox x:Name="txtLogin"
+                                     Style="{StaticResource FluentTextBoxStyle}"
+                                     Height="40"
+                                     Margin="0,5,0,10"
+                                     Padding="30,0,5,0"/>
+                            <TextBlock Text="&#xE77B;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Foreground="#757575"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"
+                                       FontSize="18"
+                                       IsHitTestVisible="False"
+                                       HorizontalAlignment="Left"/>
+                        </Grid>
                     </StackPanel>
 
                     <!-- Поле пароля -->
@@ -376,25 +381,45 @@
                                    FontSize="14"
                                    Foreground="{StaticResource TextColor}"
                                    Margin="0,0,0,5"/>
-                        <PasswordBox x:Name="txtPassword"
-                                     Style="{StaticResource FluentPasswordBoxStyle}"
-                                     Height="40"
-                                     Margin="0,5,0,20"/>
+                        <Grid>
+                            <PasswordBox x:Name="txtPassword"
+                                         Style="{StaticResource FluentPasswordBoxStyle}"
+                                         Height="40"
+                                         Margin="0,5,0,20"
+                                         Padding="30,0,5,0"/>
+                            <TextBlock Text="&#xE72E;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Foreground="#757575"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"
+                                       FontSize="18"
+                                       IsHitTestVisible="False"
+                                       HorizontalAlignment="Left"/>
+                        </Grid>
                     </StackPanel>
 
                     <!-- Кнопки -->
                     <StackPanel Style="{StaticResource FadeInButtonsStyle}">
-                        <Button Content="Войти"
-                                Style="{StaticResource FluentButtonStyle}"
-                                Width="185"
-                                Height="40"
-                                Margin="0,0,0,10"
-                                Click="Login_Click"/>
-                        <Button Content="Назад"
-                                Style="{StaticResource FluentButtonStyle}"
-                                Width="185"
-                                Height="40"
-                                Click="Back_Click"/>
+
+                        <Button Style="{StaticResource FluentButtonStyle}"
+Width="185"
+Height="40"
+Margin="0,0,0,10"
+Click="Back_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE112;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Назад"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource FluentButtonStyle}"
+Width="185"
+Height="40"
+Click="Login_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE7EF;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Войти как сотрудник"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
             </Grid>
