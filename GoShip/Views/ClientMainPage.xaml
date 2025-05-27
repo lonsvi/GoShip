@@ -197,45 +197,59 @@
                         VerticalAlignment="Top"
                         Style="{StaticResource FadeInPanelStyle}">
                     <Grid>
+
                         <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Корзина"
-                                Width="100"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="10,0,0,0"
-                                Click="Cart_Click"/>
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
+              Margin="10,0,0,0"
+              Click="Cart_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Корзина"/>
+                            </StackPanel>
+                        </Button>
                         <TextBlock FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource TextColor}"
                                    HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   Margin="120,0,0,0"
+                                   VerticalAlignment="Top"
+                                   Margin="135,13,0,0"
                                    Text="Сумма корзины: "/>
                         <TextBlock FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource TextColor}"
                                    HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   Margin="300,0,0,0"
+                                   VerticalAlignment="Top"
+                                   Margin="308,13,0,0"
                                    Text="{Binding CartTotal, StringFormat={}{0} руб.}"/>
-                        <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Каталог"
-                                Width="100"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="1208,0,0,0"
-                                Click="Catalog_Click"/>
-                        <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Поддержка"
-                                Width="116"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="1333,0,0,0"
-                                Click="Support_Click"/>
 
+                        <Button Style="{StaticResource FluentButtonStyle}"
+               Width="120"
+               Height="40"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="1208,0,0,0"
+               Click="Catalog_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Каталог"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource FluentButtonStyle}"
+               Width="130"
+               Height="40"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="1333,0,0,0"
+               Click="Support_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Поддержка"/>
+                            </StackPanel>
+                        </Button>
                         <!-- Кнопки управления окном -->
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,10,0">
                             <Grid.ColumnDefinitions>
@@ -243,14 +257,16 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="btnMinimize" Grid.Column="0"
-                                    Style="{StaticResource WindowControlButtonStyle}"
-                                    Content="-"
-                                    Margin="0,0,5,0"
-                                    Click="btnMinimize_Click"/>
+    Style="{StaticResource WindowControlButtonStyle}"
+    Content="&#xE949;" 
+    FontFamily="Segoe MDL2 Assets"
+    Margin="0,0,5,0"
+    Click="btnMinimize_Click"/>
                             <Button x:Name="btnClose" Grid.Column="1"
-                                    Style="{StaticResource WindowControlButtonStyle}"
-                                    Content="×"
-                                    Click="btnClose_Click"/>
+    Style="{StaticResource WindowControlButtonStyle}"
+    Content="&#xE8BB;" 
+    FontFamily="Segoe MDL2 Assets"
+    Click="btnClose_Click"/>
                         </Grid>
                     </Grid>
                 </Border>
@@ -258,47 +274,61 @@
                 <!-- Каталог -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10,80,10,10">
                     <ItemsControl ItemsSource="{Binding Products}"
-                                  Style="{StaticResource FadeInItemsStyle}">
+                  Style="{StaticResource FadeInItemsStyle}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Horizontal" Width="1520"/>
-                                <!-- Уменьшено для учета Margin -->
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Width="300" Margin="10">
                                     <Border Background="{StaticResource CardBackground}"
-                                            BorderBrush="{StaticResource CardBorderGradient}"
-                                            BorderThickness="1"
-                                            CornerRadius="10"
-                                            Effect="{StaticResource CardShadow}">
+                            BorderBrush="{StaticResource CardBorderGradient}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Effect="{StaticResource CardShadow}">
                                         <StackPanel>
-                                            <Rectangle Height="380" Width="300" Fill="Transparent"/>
-                                            <Image Source="{Binding ImageUrl}"
-                                                   Height="280"
-                                                   Width="260"
-                                                   Margin="20,-360,20,0"/>
+                                            <Border Height="280"
+                                    Width="260"
+                                    Margin="20,20,20,0"
+                                    CornerRadius="16"
+                                    BorderBrush="{StaticResource BorderColor}"
+                                    BorderThickness="1"
+                                    Background="#FFF"
+                                    Effect="{StaticResource CardShadow}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top">
+                                                <Image Source="{Binding ImageUrl}"
+                                       Stretch="UniformToFill"
+                                       Width="260"
+                                       Height="280"
+                                       ClipToBounds="True"/>
+                                            </Border>
                                             <TextBlock FontSize="20"
-                                                       FontWeight="Bold"
-                                                       Foreground="{StaticResource TextColor}"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="20,10,0,0"
-                                                       Text="{Binding Name}"/>
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextColor}"
+                                       HorizontalAlignment="Left"
+                                       Margin="20,10,0,0"
+                                       Text="{Binding Name}"/>
                                             <TextBlock FontSize="20"
-                                                       FontWeight="Bold"
-                                                       Foreground="{StaticResource TextColor}"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="20,5,0,0"
-                                                       Text="{Binding Price, StringFormat={}{0} руб.}"/>
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextColor}"
+                                       HorizontalAlignment="Left"
+                                       Margin="20,5,0,0"
+                                       Text="{Binding Price, StringFormat={}{0} руб.}"/>
                                             <Button Style="{StaticResource FluentButtonStyle}"
-                                                    Content="Добавить"
-                                                    Width="100"
-                                                    Height="40"
-                                                    HorizontalAlignment="Right"
-                                                    Margin="0,10,20,10"
-                                                    Click="AddToCart_Click"
-                                                    Tag="{Binding Id}"/>
+                                    Width="120"
+                                    Height="40"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,10,20,10"
+                                    Click="AddToCart_Click"
+                                    Tag="{Binding Id}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Добавить"/>
+                                                </StackPanel>
+                                            </Button>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
@@ -306,6 +336,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+
             </Grid>
         </Border>
     </Border>

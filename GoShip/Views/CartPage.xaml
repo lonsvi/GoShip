@@ -113,7 +113,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border x:Name="border" Background="{TemplateBinding Background}"
-                                CornerRadius="12" SnapsToDevicePixels="True">
+                  CornerRadius="12" SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -194,52 +194,70 @@
                         Style="{StaticResource FadeInPanelStyle}">
                     <Grid>
                         <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Корзина"
-                                Width="100"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="10,0,0,0"
-                                Click="Cart_Click"/>
+Width="120"
+Height="40"
+HorizontalAlignment="Left"
+VerticalAlignment="Center"
+Margin="10,0,0,0"
+Click="Cart_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Корзина"/>
+                            </StackPanel>
+                        </Button>
 
                         <TextBlock FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource TextColor}"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Margin="120,0,0,0"
+                                   Margin="145,0,0,0"
                                    Text="Сумма корзины: "/>
                         <TextBlock FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource TextColor}"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Margin="300,0,0,0"
+                                   Margin="325,0,0,0"
                                    Text="{Binding CartTotal, StringFormat={}{0} руб.}"/>
                         <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Оформить заказ"
-                                Width="150"
-                                Height="40"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="500,0,500,0"
-                                Click="Checkout_Click"/>
+        Width="170"
+        Height="40"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Margin="500,0,500,0"
+        Click="Checkout_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Оформить заказ"/>
+                            </StackPanel>
+                        </Button>
+
                         <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Каталог"
-                                Width="100"
-                                Height="40"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="0,0,150,0"
-                                Click="Catalog_Click"/>
+                 Width="120"
+                 Height="40"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"
+                 Margin="1208,0,0,0"
+                 Click="Catalog_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Каталог"/>
+                            </StackPanel>
+                        </Button>
+
                         <Button Style="{StaticResource FluentButtonStyle}"
-                                Content="Поддержка"
-                                Width="100"
-                                Height="40"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="0,0,20,0"
-                                Click="Support_Click"/>
+                 Width="130"
+                 Height="40"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"
+                 Margin="1333,0,0,0"
+                 Click="Support_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                <TextBlock Text="Поддержка"/>
+                            </StackPanel>
+                        </Button>
 
                         <!-- Кнопки управления окном -->
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,10,0">
@@ -248,14 +266,16 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="btnMinimize" Grid.Column="0"
-                                    Style="{StaticResource WindowControlButtonStyle}"
-                                    Content="-"
-                                    Margin="0,0,5,0"
-                                    Click="btnMinimize_Click"/>
+    Style="{StaticResource WindowControlButtonStyle}"
+    Content="&#xE949;" 
+    FontFamily="Segoe MDL2 Assets"
+    Margin="0,0,5,0"
+    Click="btnMinimize_Click"/>
                             <Button x:Name="btnClose" Grid.Column="1"
-                                    Style="{StaticResource WindowControlButtonStyle}"
-                                    Content="×"
-                                    Click="btnClose_Click"/>
+    Style="{StaticResource WindowControlButtonStyle}"
+    Content="&#xE8BB;" 
+    FontFamily="Segoe MDL2 Assets"
+    Click="btnClose_Click"/>
                         </Grid>
                     </Grid>
                 </Border>
@@ -293,60 +313,78 @@
                                                 <ColumnDefinition Width="120"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!-- Изображение блюда -->
-                                            <Image Grid.Column="0"
-                                                   Source="{Binding Product.ImageUrl}"
-                                                   Width="100"
-                                                   Height="100"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left"/>
+                                            <Border Grid.Column="0"
+        Width="120"
+        Height="120"
+        CornerRadius="12"
+        BorderBrush="{StaticResource BorderColor}"
+        BorderThickness="1"
+        Background="#FFF"
+        Effect="{StaticResource CardShadow}"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Left">
+                                                <Image Source="{Binding Product.ImageUrl}"
+           Stretch="UniformToFill"
+           Width="100"
+           Height="100"
+           ClipToBounds="True"
+           Margin="0"/>
+                                            </Border>
+
 
                                             <!-- Информация о блюде -->
                                             <StackPanel Grid.Column="1"
-                                                        VerticalAlignment="Center"
-                                                        Margin="10,0,0,0">
+            VerticalAlignment="Center"
+            Margin="10,0,0,0">
                                                 <TextBlock FontSize="18"
-                                                           FontWeight="Bold"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Name}"
-                                                           Margin="0,0,0,5"/>
-                                                <TextBlock FontSize="14"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Quantity, StringFormat=Количество: {0}}"
-                                                           Margin="0,0,0,3"/>
-                                                <TextBlock FontSize="14"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Calories, StringFormat=ккал: {0}}"
-                                                           Margin="0,0,0,3"/>
-                                                <TextBlock FontSize="14"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Proteins, StringFormat=белки: {0}}"
-                                                           Margin="0,0,0,3"/>
-                                                <TextBlock FontSize="14"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Fats, StringFormat=жиры: {0}}"
-                                                           Margin="0,0,0,3"/>
-                                                <TextBlock FontSize="14"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Carbohydrates, StringFormat=углеводы: {0}}"
-                                                           Margin="0,0,0,3"/>
-                                                <TextBlock FontSize="16"
-                                                           FontWeight="Bold"
-                                                           Foreground="{StaticResource TextColor}"
-                                                           Text="{Binding Product.Price, StringFormat=Цена: {0} руб.}"
-                                                           Margin="0,0,0,3"/>
+               FontWeight="Bold"
+               Foreground="{StaticResource TextColor}"
+               Text="{Binding Product.Name}"
+               Margin="0,0,0,5"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE14C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                    <TextBlock FontSize="14" Foreground="{StaticResource TextColor}" Text="{Binding Quantity, StringFormat=Количество: {0}}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+
+                                                    <TextBlock FontSize="14" Foreground="{StaticResource TextColor}" Text="{Binding Product.Calories, StringFormat=ккал: {0}}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE9A9;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                    <TextBlock FontSize="14" Foreground="{StaticResource TextColor}" Text="{Binding Product.Proteins, StringFormat=белки: {0}}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE9A9;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                    <TextBlock FontSize="14" Foreground="{StaticResource TextColor}" Text="{Binding Product.Fats, StringFormat=жиры: {0}}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                    <TextBlock FontSize="14" Foreground="{StaticResource TextColor}" Text="{Binding Product.Carbohydrates, StringFormat=углеводы: {0}}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                    <TextBlock Text="&#xE8C7;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#757575" Margin="0,0,6,0"/>
+                                                    <TextBlock FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" Text="{Binding Product.Price, StringFormat=Цена: {0} руб.}"/>
+                                                </StackPanel>
                                             </StackPanel>
+
 
                                             <!-- Кнопка "Убрать" -->
                                             <Button Grid.Column="2"
-                                                    Style="{StaticResource FluentButtonStyle}"
-                                                    Content="Убрать"
-                                                    Width="100"
-                                                    Height="40"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Right"
-                                                    Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                    CommandParameter="{Binding ProductId}"/>
+        Style="{StaticResource FluentButtonStyle}"
+        Width="100"
+        Height="40"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Right"
+        Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+        CommandParameter="{Binding ProductId}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Убрать"/>
+                                                </StackPanel>
+                                            </Button>
+
+
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -357,52 +395,70 @@
                     <!-- Прошлые покупки -->
                     <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="20,20,50,20">
                         <StackPanel>
-                            <TextBlock FontSize="24"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource TextColor}"
-                                       HorizontalAlignment="Left"
-                                       Margin="20,0,0,10"
-                                       Text="Прошлые покупки"/>
+                            <StackPanel Orientation="Horizontal" Margin="20,0,0,10" VerticalAlignment="Center">
+                                <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#757575" Margin="0,0,8,0"/>
+                                <TextBlock FontSize="24"
+               FontWeight="Bold"
+               Foreground="{StaticResource TextColor}"
+               Text="Прошлые покупки"/>
+                            </StackPanel>
+
+
                             <ItemsControl ItemsSource="{Binding PastOrders}"
-                                          Style="{StaticResource FadeInItemsStyle}">
+              Style="{StaticResource FadeInItemsStyle}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Width="400" Margin="10">
                                             <Border Background="{StaticResource CardBackground}"
-                                                    BorderBrush="{StaticResource CardBorderGradient}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="10"
-                                                    Effect="{StaticResource CardShadow}">
+                        BorderBrush="{StaticResource CardBorderGradient}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Effect="{StaticResource CardShadow}">
                                                 <StackPanel Margin="10">
-                                                    <TextBlock FontSize="18"
-                                                               FontWeight="Bold"
-                                                               Foreground="{StaticResource TextColor}"
-                                                               HorizontalAlignment="Center"
-                                                               Text="{Binding OrderDate}"/>
-                                                    <TextBlock FontSize="16"
-                                                               Foreground="{StaticResource TextColor}"
-                                                               HorizontalAlignment="Center"
-                                                               Text="{Binding Total, StringFormat=Сумма: {0} руб.}"/>
-                                                    <TextBlock FontSize="16"
-                                                               Foreground="{StaticResource TextColor}"
-                                                               HorizontalAlignment="Center"
-                                                               Text="{Binding Address}"/>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,3">
+                                                        <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#757575" Margin="0,0,6,0"/>
+                                                        <TextBlock FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextColor}"
+                                       Text="{Binding OrderDate}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,3">
+                                                        <TextBlock Text="&#xE8C7;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#757575" Margin="0,0,6,0"/>
+                                                        <TextBlock FontSize="16"
+                                       Foreground="{StaticResource TextColor}"
+                                       Text="{Binding Total, StringFormat=Сумма: {0} руб.}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,3">
+                                                        <TextBlock Text="&#xE707;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#757575" Margin="0,0,6,0"/>
+                                                        <TextBlock FontSize="16"
+                                       Foreground="{StaticResource TextColor}"
+                                       Text="{Binding Address}"/>
+                                                    </StackPanel>
                                                     <ItemsControl ItemsSource="{Binding Items}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Margin="10,0,0,0">
-                                                                    <TextBlock FontSize="16"
-                                                                               Foreground="{StaticResource TextColor}"
-                                                                               HorizontalAlignment="Center"
-                                                                               Text="{Binding ProductName}"/>
-                                                                    <TextBlock FontSize="16"
-                                                                               Foreground="{StaticResource TextColor}"
-                                                                               HorizontalAlignment="Center"
-                                                                               Text="{Binding Quantity, StringFormat=Количество: {0}}"/>
-                                                                    <TextBlock FontSize="16"
-                                                                               Foreground="{StaticResource TextColor}"
-                                                                               HorizontalAlignment="Center"
-                                                                               Text="{Binding ProductPrice, StringFormat=Цена: {0} руб.}"/>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,2">
+                                                                        <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                                        <TextBlock FontSize="16"
+                                                       Foreground="{StaticResource TextColor}"
+                                                       HorizontalAlignment="Center"
+                                                       Text="{Binding ProductName}"/>
+                                                                    </StackPanel>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,2">
+                                                                        <TextBlock Text="&#xE14C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                                        <TextBlock FontSize="16"
+                                                       Foreground="{StaticResource TextColor}"
+                                                       HorizontalAlignment="Center"
+                                                       Text="{Binding Quantity, StringFormat=Количество: {0}}"/>
+                                                                    </StackPanel>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,2">
+                                                                        <TextBlock Text="&#xE8C7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#757575" Margin="0,0,6,0"/>
+                                                                        <TextBlock FontSize="16"
+                                                       Foreground="{StaticResource TextColor}"
+                                                       HorizontalAlignment="Center"
+                                                       Text="{Binding ProductPrice, StringFormat=Цена: {0} руб.}"/>
+                                                                    </StackPanel>
                                                                 </StackPanel>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
@@ -413,6 +469,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
